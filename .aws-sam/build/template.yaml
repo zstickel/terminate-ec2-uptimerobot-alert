@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: restarttimeandtide
+Transform:
+- AWS::Serverless-2016-10-31
+Resources:
+  restartTimeandTideAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Cors:
+        AllowMethods: '''POST'''
+        AllowHeaders: '''X-Forwarded-For'''
+        AllowOrigin: '''uptimerobot.com'''
+        MaxAge: '''600'''
+        AllowCredentials: true
+      Name: timeAndTideWebhook
+      StageName: prod
+  restartTimeandTideSns:
+    Type: AWS::SNS::Topic
+  restartTimeandTideFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/restartTimeandTideFunction.restartTimeandTideHandler
+      Runtime: nodejs14.x
+      MemorySize: 128
+      Timeout: 100
+      Description: A Lambda function that returns a static string.
+      Environment:
+        Variables:
+          SNStopic:
+            Ref: restartTimeandTideSns
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - arn:aws:iam::401111955398:policy/restarttimeandtidelambdapolicy
+      - SNSPublishMessagePolicy:
+          TopicName:
+            Fn::GetAtt:
+            - restartTimeandTideSns
+            - TopicName
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
+            RestApiId:
+              Ref: restartTimeandTideAPI
+      CodeUri: restartTimeandTideFunction
+Outputs:
+  SNStopicName:
+    Description: SNS topic name
+    Value:
+      Fn::GetAtt:
+      - restartTimeandTideSns
+      - TopicName
+  SNStopicARN:
+    Description: SNS topic ARN
+    Value:
+      Ref: restartTimeandTideSns
