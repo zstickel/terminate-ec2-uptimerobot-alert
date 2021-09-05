@@ -1,6 +1,6 @@
 {
-    "name": "restart-timeand-tide",
-    "description": "function-restarts-website",
+    "name": "terminate-ec2-uptimerobot-alert",
+    "description": "terminate-ec2-and-alert",
     "version": "0.0.1",
     "private": true,
     "dependencies": {},

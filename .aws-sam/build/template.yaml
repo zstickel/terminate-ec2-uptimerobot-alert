@@ -1,9 +1,12 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: restarttimeandtide
+Description: terminateec2uptimerobotalert
 Transform:
 - AWS::Serverless-2016-10-31
+Parameters:
+  EC2Tag:
+    Type: String
 Resources:
-  restartTimeandTideAPI:
+  terminateEC2UptimeRobotAPI:
     Type: AWS::Serverless::Api
     Properties:
       Cors:
@@ -12,30 +15,39 @@ Resources:
         AllowOrigin: '''uptimerobot.com'''
         MaxAge: '''600'''
         AllowCredentials: true
-      Name: timeAndTideWebhook
+      Name: terminateEC2UptimeRobotAPI
       StageName: prod
-  restartTimeandTideSns:
+  terminateEC2UptimerobotAlertSns:
     Type: AWS::SNS::Topic
-  restartTimeandTideFunction:
+  terminateEC2UptimeRobotFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/restartTimeandTideFunction.restartTimeandTideHandler
+      Handler: src/handlers/terminateEC2UptimeRobot.terminateEC2UptimeRobotHandler
       Runtime: nodejs14.x
       MemorySize: 128
       Timeout: 100
-      Description: A Lambda function that returns a static string.
+      Description: A Lambda function that terminates an EC2 instance and sends an
+        SNS notification.
       Environment:
         Variables:
           SNStopic:
-            Ref: restartTimeandTideSns
+            Ref: terminateEC2UptimerobotAlertSns
+          EC2TagName:
+            Ref: EC2Tag
       Policies:
       - AWSLambdaBasicExecutionRole
-      - arn:aws:iam::401111955398:policy/restarttimeandtidelambdapolicy
       - SNSPublishMessagePolicy:
           TopicName:
             Fn::GetAtt:
-            - restartTimeandTideSns
+            - terminateEC2UptimerobotAlertSns
             - TopicName
+      - Statement:
+        - Sid: EC2DescribeTerminateInstancePolicy
+          Effect: Allow
+          Action:
+          - ec2:TerminateInstances
+          - ec2:DescribeInstances
+          Resource: '*'
       Events:
         ApiEvent:
           Type: Api
@@ -43,16 +55,16 @@ Resources:
             Path: /
             Method: post
             RestApiId:
-              Ref: restartTimeandTideAPI
-      CodeUri: restartTimeandTideFunction
+              Ref: terminateEC2UptimeRobotAPI
+      CodeUri: terminateEC2UptimeRobotFunction
 Outputs:
   SNStopicName:
     Description: SNS topic name
     Value:
       Fn::GetAtt:
-      - restartTimeandTideSns
+      - terminateEC2UptimeRobotAlertSns
       - TopicName
   SNStopicARN:
     Description: SNS topic ARN
     Value:
-      Ref: restartTimeandTideSns
+      Ref: terminateEC2UptimeRobotAlertSns

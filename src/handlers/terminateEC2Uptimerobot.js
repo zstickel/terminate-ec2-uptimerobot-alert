@@ -1,29 +1,16 @@
 /**
- * A Lambda function that returns a static string
+ * A Lambda function that terminates an EC2 instance (based on tag passed as environment variable) and sends an SNS notification in response
+ * to an uptime robot POST message to API gateway
  */
 const AWS = require('aws-sdk');
-exports.restartTimeandTideHandler = async () => {
-    // If you change this message, you will need to change hello-from-lambda.test.js
-    
-   
-
-/*tag: - The key/value combination of a tag assigned to the 
-resource. Use the tag key in the filter name and the tag value 
-as the filter value. For example, to find all resources that 
-have a tag with the key Owner and the value TeamA, specify 
-tag:Owner for the filter name and TeamA for the filter value.
-*/
-
-
-    let ec2 = new AWS.EC2();
-    let sns = new AWS.SNS();
- 
-      
-      var paramsforInstances = {
+const ec2 = new AWS.EC2();
+const sns = new AWS.SNS();
+exports.terminateEC2UptimerobotHandler = async () => {
+      const paramsforInstances = {
         Filters: [
           {
             Name: 'tag:Name',
-            Values: ['WaypointcounselingStack/ASG']
+            Values: [`${process.env.EC2TagName}`]
           }
         ]
       };
@@ -37,8 +24,7 @@ tag:Owner for the filter name and TeamA for the filter value.
     
         let ec2result = await ec2.terminateInstances(params).promise();
         console.log(ec2result);
-    // All log statements are written to CloudWatch
-    //console.info(`${message}`);
+   
        console.log(instanceID);
         let response = {
             "isBase64Encoded": true,
