@@ -62,11 +62,4 @@ Resources:
               Ref: terminateEC2UptimeRobotAPI
 
   
-Outputs:
-  SNStopicName:
-    Description: SNS topic name
-    Value: !GetAtt terminateEC2UptimeRobotAlertSns.TopicName
 
-  SNStopicARN:
-    Description: SNS topic ARN
-    Value: !Ref terminateEC2UptimeRobotAlertSns

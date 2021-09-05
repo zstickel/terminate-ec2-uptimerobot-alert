@@ -57,14 +57,3 @@ Resources:
             RestApiId:
               Ref: terminateEC2UptimeRobotAPI
       CodeUri: terminateEC2UptimeRobotFunction
-Outputs:
-  SNStopicName:
-    Description: SNS topic name
-    Value:
-      Fn::GetAtt:
-      - terminateEC2UptimeRobotAlertSns
-      - TopicName
-  SNStopicARN:
-    Description: SNS topic ARN
-    Value:
-      Ref: terminateEC2UptimeRobotAlertSns

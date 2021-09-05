@@ -2,9 +2,10 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "restart-timeand-tide"
+stack_name = "terminate-ec2-uptimerobot"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-10lr4mcpzqcgs"
-s3_prefix = "restart-timeand-tide"
+s3_prefix = "terminate-ec2-uptimerobot"
 region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
+parameter_overrides = "EC2Tag=\"samlambdatest\""
