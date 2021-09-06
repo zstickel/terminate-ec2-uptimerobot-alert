@@ -10,7 +10,7 @@ Resources for this project are defined in the `template.yml` file in this projec
 
 This project presumes that the user has an existing deployed single instance web application behind an autoscaling group that is capable of launching an EC2 image with a stable version of the website when the running instance is terminated. The project also presumes that the user has set up a webhook in Uptime Robot to send a post to the API gateway endpoint created by this application. The user must also separatly subscribe to the SNS topic created by this application to receive alerts.
 
-## To Deploy the sample application
+## To Deploy the application
 
 The AWS SAM CLI is an extension of the AWS CLI that adds functionality for building and testing Lambda applications. It uses Docker to run your functions in an Amazon Linux environment that matches Lambda. It can also emulate your application's build environment and API.
 
